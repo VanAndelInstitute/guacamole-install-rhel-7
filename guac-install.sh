@@ -13,10 +13,10 @@
 #
 ######  PRE-RUN CHECKS  ##############################################
 if ! [ $(id -u) = 0 ]; then echo "This script must be run as sudo or root, try again..."; exit 1; fi
-if ! [ $(getenforce) = "Enforcing" ]; then echo "This script requires SELinux to be active and in \"Enforcing mode\""; exit 1; fi
+#if ! [ $(getenforce) = "Enforcing" ]; then echo "This script requires SELinux to be active and in \"Enforcing mode\""; exit 1; fi
 if ! [ $(uname -m) = "x86_64" ]; then echo "This script will only run on 64 bit versions of RHEL/CentOS"; exit 1; fi
 # Check that firewalld is installed
-if ! rpm -q --quiet "firewalld"; then echo "This script requires firewalld to be installed on the system"; exit 1; fi
+#if ! rpm -q --quiet "firewalld"; then echo "This script requires firewalld to be installed on the system"; exit 1; fi
 
 # Allow trap to work in functions
 set -E
@@ -1045,7 +1045,7 @@ s_echo "y" "${Bold}Installing Required Dependencies"
 
 # Install Required Packages
 {
-	yum install -y cairo-devel ffmpeg-devel freerdp-devel freerdp-plugins gcc gnu-free-mono-fonts libjpeg-turbo-devel libjpeg-turbo-official libpng-devel libssh2-devel libtelnet-devel libvncserver-devel libvorbis-devel libwebp-devel libwebsockets-devel mariadb mariadb-server nginx openssl-devel pango-devel policycoreutils-python pulseaudio-libs-devel setroubleshoot tomcat uuid-devel
+	yum install -y cairo-devel ffmpeg-devel freerdp-devel freerdp-plugins gcc gnu-free-mono-fonts libjpeg-turbo-devel libjpeg-turbo-official libpng-devel libssh2-devel libtelnet-devel libvncserver-devel libvorbis-devel libwebp-devel libwebsockets-devel mariadb mariadb-server nginx openssl-devel pango-devel pulseaudio-libs-devel setroubleshoot tomcat uuid-devel
 } &
 s_echo "n" "${Reset}-Installing required packages...    "; spinner
 
@@ -1286,10 +1286,10 @@ s_echo "n" "-Creating Guacamole Tables...    "; spinner
 # Fixes timezone issues when using MySQLConnectorJ 8.x or geater
 {
 	mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql -p${MYSQL_PASSWD}
-	MY_CNF_LINE=`grep -n "\[mysqld\]" /etc/my.cnf | grep -o '^[0-9]*'`
+	MY_CNF_LINE=`grep -n "\[mysqld\]" /etc/my.cnf.d/mariadb-server.cnf | grep -o '^[0-9]*'`
 	MY_CNF_LINE=$((MY_CNF_LINE + 1 ))
 	MY_TZ=`readlink /etc/localtime | sed "s/.*\/usr\/share\/zoneinfo\///"`
-	sed -i "${MY_CNF_LINE}i default-time-zone='${MY_TZ}'" /etc/my.cnf
+	sed -i "${MY_CNF_LINE}i default-time-zone='${MY_TZ}'" /etc/my.cnf.d/mariadb-server.cnf
 	systemctl restart mariadb
 } &
 s_echo "n" "-Setting Time Zone Database & Config...    "; spinner
