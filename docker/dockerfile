@@ -2,10 +2,21 @@ FROM vanandelinstitute/systemdcentos
 
 ENV container docker
 
-RUN yum install -y git && \
-git clone VanAndelInstitute/guacamole-install-rhel-7 && \
-cd guacamole-install-rhel-7 && \
-bash guac-install.sh
+RUN yum install -y git yum-utils wget epel-release && \
+yum groupinstall -y "Development tools" && \
+wget http://repo.iotti.biz/CentOS/8/noarch/lux-release-8-1.noarch.rpm &&\
+wget https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm &&\
+wget https://libjpeg-turbo.org/pmwiki/uploads/Downloads/libjpeg-turbo.repo -P /etc/yum.repos.d/ &&\
+yum localinstall -y lux-release-8-1.noarch.rpm rpmfusion-free-release-8.noarch.rpm &&\
+git clone https://github.com/VanAndelInstitute/guacamole-install-rhel-7.git
+
+RUN yum config-manager --set-enabled PowerTools
+#RUN yum-config-manager --set-enabled powertools
+#RUN yum-config-manager --set-enabled devel
+RUN yum config-manager --set-enabled Devel
+RUN yum install -y cairo-devel ffmpeg-devel freerdp-devel freerdp-plugins gcc gnu-free-mono-fonts libjpeg-turbo-devel libjpeg-turbo-official libpng-devel libssh2-devel libtelnet-devel libvncserver-devel libvorbis-devel libwebp-devel libwebsockets-devel mariadb mariadb-server nginx openssl-devel pango-devel pulseaudio-libs-devel setroubleshoot tomcat uuid-devel
+#cd guacamole-install-rhel-7 && \
+#bash guac-install.sh
 
 # VOLUME [ "/sys/fs/cgroup" ]
 
