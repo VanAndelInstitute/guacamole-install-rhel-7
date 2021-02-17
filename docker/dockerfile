@@ -1,0 +1,12 @@
+FROM vanandelinstitute/systemdcentos
+
+ENV container docker
+
+RUN yum install -y git && \
+git clone VanAndelInstitute/guacamole-install-rhel-7 && \
+cd guacamole-install-rhel-7 && \
+bash guac-install.sh
+
+# VOLUME [ "/sys/fs/cgroup" ]
+
+CMD ["/usr/sbin/init"]
